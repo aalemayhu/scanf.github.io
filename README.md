@@ -1,4 +1,4 @@
-365.github.io
+scanf.github.io
 =============
 
-A site for my progress on [365](https://github.com/scanf/365) activities.
+Soon to be my blog.
