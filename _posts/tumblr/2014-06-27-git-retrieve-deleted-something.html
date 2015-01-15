@@ -1,0 +1,13 @@
+---
+layout: post
+title: git retrieve deleted $something
+date: '2014-06-27T17:12:39+02:00'
+tags:
+- git
+- retrieve
+- deleted
+- recover
+tumblr_url: http://ccscanf.tumblr.com/post/90092685923
+---
+<pre class="brush: shell">for x in $(git whatchanged|grep $something| awk ' { print $6 } '); do git ch `git rev-list -n 1 HEAD -- "$x"`^ -- "$x"; done
+</pre>

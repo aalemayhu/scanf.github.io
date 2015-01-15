@@ -1,0 +1,23 @@
+---
+layout: post
+title: Cleaning up ~/src
+date: '2014-06-02T14:37:26+02:00'
+tags: []
+tumblr_url: http://ccscanf.tumblr.com/post/87614834053
+---
+<pre class="brush: shell">#!/bin/bash
+PREFIX=/home/ccscanf/src/
+for dir in $(ls -l | grep "^d"|awk ' { print $9 } ')
+do
+  cd $PREFIX$dir;
+  read -p "Would you like to delete [$dir]?(n/y)" -n 1 -r
+  git status;
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    rm -rvf "$PREFIX$dir"
+  fi
+  echo
+  echo
+  clear
+done;
+</pre>

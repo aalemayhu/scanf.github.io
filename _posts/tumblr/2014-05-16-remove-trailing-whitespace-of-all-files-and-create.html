@@ -1,0 +1,8 @@
+---
+layout: post
+title: Remove trailing whitespace of all files and create backups
+date: '2014-05-16T11:01:10+02:00'
+tags: []
+tumblr_url: http://ccscanf.tumblr.com/post/85917155953
+---
+<pre class="brush: shell">find . -type f -print0 |xargs -0 perl -pi.bak -e 's/ +$//'</pre>

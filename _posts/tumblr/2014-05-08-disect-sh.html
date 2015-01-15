@@ -1,0 +1,16 @@
+---
+layout: post
+title: disect.sh
+date: '2014-05-08T14:49:00+02:00'
+tags:
+- git
+- commit
+- git archive
+- git all commits in branch
+tumblr_url: http://ccscanf.tumblr.com/post/85140041913
+---
+<pre class="brush: bash">#!/bin/bash 
+for rev in $( git log --pretty=%H ); do
+  git archive --format=tar $rev | gzip &gt; disected/$rev.tar.gz
+done
+</pre>

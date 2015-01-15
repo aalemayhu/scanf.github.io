@@ -1,0 +1,8 @@
+---
+layout: post
+title: Read error messages!
+date: '2011-12-16T18:22:00+01:00'
+tags: []
+tumblr_url: http://ccscanf.tumblr.com/post/63260095111
+---
+<p>Like in any project  sometimes the application crashes or fails to build. Because the year is  soon over, I have had a lot of things I wanted to get done, so my time  has been very limited. As a consequence of that I don&#8217;t look at the  compiler warnings or errors. I just jump straight at the code and if am  more relaxed I might take a quick look at any messages from the  compiler, just to get an estimate of the location. When I have an  idea where the issue is located. I look trough the code and try to  spot any supicious lines. Often this goes well and I spot errors  quickly, but other times it takes several minutes up to hours. After a while with  this approach I finally got a error that I couldn&#8217;t spot. The issue was  so odd and only occured at what seemed random. When realizing I hadn&#8217;t  fully read the compiler output,  I went back and read the messages from  the compiler line by line. After reading the message I knew what to do. I went ahead  and set up some breakpoints to look at what was going on. After a couple  of runs I knew where the issue was located and how to fix it. The  issue was actually trivial, I was just accidentally abusing a  pointer. Read compiler messages, they can save you time.</p>

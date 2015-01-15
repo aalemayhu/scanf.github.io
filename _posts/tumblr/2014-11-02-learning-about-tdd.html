@@ -1,0 +1,169 @@
+---
+layout: post
+title: Learning about TDD
+date: '2014-11-02T10:23:00+01:00'
+tags:
+- TDD
+- iOS
+- unit testing
+- storyboard
+- iboutlet
+- xcode
+- xctest
+tumblr_url: http://ccscanf.tumblr.com/post/101585780448
+---
+<p><span>A colleague from work wanted me to write tests. His arguments for; where to detect bugs, before reaching </span><a href="http://en.wikipedia.org/wiki/Quality_assurance#QA_in_software_development">QA</a><span>. I have wanted to give </span><a href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a><span> a try in a project, but I have never actually taken the time to sit down and write </span><a href="http://en.wikipedia.org/wiki/Unit_testing">unit tests</a><span> before recently.</span></p>
+<p>I am not going to try to explain TDD. I am not even sure I really know what it is, but I have gotten the impression it can save me time. I watched the following talks to learn more about TDD:</p>
+<ul><li><a href="https://www.youtube.com/watch?v=qPfQM4w4I04">Magic Tricks of Testing</a></li>
+<li><a href="http://www.confreaks.com/videos/228-agileroots2009-tdd-code-without-fear">TDD: Code without Fear</a></li>
+<li><a href="http://www.confreaks.com/videos/2492-railsconf2013-tdding-ios-apps-for-fun-and-profit-with-rubymotion">TDDing iOS Apps for fun and profit with RubyMotion</a></li>
+<li><a href="http://www.confreaks.com/videos/3225-mwjs-using-tdd-to-tame-the-big-ball-o-mud">Using TDD to Tame the Big Ball o&#8217; Mud</a></li>
+<li><a href="https://www.youtube.com/watch?v=S5MvykD3yiE">iOS Unit Testing Like a Boss</a></li>
+</ul><p>The ruby community seems to have a healthy testing spirit and that is great for the rest of the world because we get to enjoy their experience.</p>
+<p>One thing I noticed is that people seem to expect a test to run fast. Fasts tests are really not what appeals most for me. I honestly do not care if it takes 20 more seconds to run a test or minutes for that matter. What matters to me is detecting and fixing as many bugs as possible before reaching QA. The time it takes for a bug to go from QA and a fix is made can vary very much. In our company testing is distributed amongs the employees so it is near to impossible to predict when a developer gets enough feedback to create a fix or mark issue #XYZ as solved.</p>
+<p>Being inspired by my senior I went ahead and tried to do some serious testing. Since I was doing it for work I decided to use one of our Android projects <a href="https://play.google.com/store/apps/details?id=com.profsys.avvik">iAvvik</a>. I was told that <a href="http://robolectric.org">Robolectric</a> was the framework to use for android. Getting Android-studio and Robolectric to work together seemed very difficult. I gave up after several attempts at fixing obscure errors encountered. I did try to ask for help, but it just took too long to get up and running. Since I had some many issues trying to setup a test environment I decided to see how it was for Xcode and iOS. I watched two <a href="http://en.wikipedia.org/wiki/Apple_Worldwide_Developers_Conference">WWDC</a> talks <a href="http://devstreaming.apple.com/videos/wwdc/2013/409xdx4x4adcwca5ok0rtsup0sg/409/409-HD.mov?dl=1">Testing in Xcode 5</a> and <a href="http://devstreaming.apple.com/videos/wwdc/2014/414xx4l5du0f408/414/414_hd_testing_in_xcode_6.mov?dl=1">Testing in Xcode 6</a>. After watching the talks I decided to try out <a href="https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/testing_with_xcode/Introduction/Introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1">XCTest</a>. I was relieved to see that it was very integrated with Xcode. I tried adding tests to one of our iOS projects and it was fun. I wrote tests that covered our application model.</p>
+<p>When the work week was over I was still thinking about TDD and decided to create a new project where I could start from scratch. Let us go trough what I did.</p>
+<p>I started a new project <a href="https://github.com/scanf/-">電卓</a>. 電卓 is a tiny calculator nothing fancy just simple addition. Xcode automatically creates a test target with an example test whenever you create a new iOS project.</p>
+<pre><code>//  __Tests.m
+#import &lt;UIKit/UIKit.h&gt;
+#import &lt;XCTest/XCTest.h&gt;
+
+@interface __Tests : XCTestCase
+
+@end
+
+@implementation __Tests
+
+- (void)setUp {
+    [super setUp];
+}
+
+- (void)tearDown {
+    [super tearDown];
+}
+
+- (void)testExample {
+    XCTAssert(YES, @"Pass");
+}
+
+- (void)testPerformanceExample {
+    [self measureBlock:^{
+    }];
+}
+@end</code></pre>
+<p>Tests in XCTest are written by adding the prefix test to the method. setUp and tearDown is called for each test. What also seemed interesting is that you can measure performance, which is not a requirement for me but is very nice to have.</p>
+<p>Since we are making a calculator, having some sort of parser which returns results for a expression seems good. So I created a test for testing addition.</p>
+<pre><code>#import &lt;XCTest/XCTest.h&gt;
+#import "CCCalculator.h"
+
+@interface CalculatorParsing : XCTestCase {
+
+    CCCalculator *calc;
+}
+
+@end
+
+@implementation CalculatorParsing
+
+- (void)setUp {
+    [super setUp];
+
+    calc = [CCCalculator new];
+}
+
+- (void)testAddition {
+
+    for (int a = 2; a &lt; 20; a++) {
+        for (int b = a * 2; b &lt; 5; b++) {            
+            NSString *expression = [NSString stringWithFormat:@"%d+%d", a, b];
+            NSString *answer = [CCCalculator resultsFor:expression];
+            NSString *correctAnswer = [NSString stringWithFormat:@"%d", a+b];
+            XCTAssert([answer isEqualToString:correctAnswer], @"Invalid results.");
+        }
+    }
+}
+
+@end
+</code></pre>
+<p>Writing the test without the actual CalculatorParsing class implemented was very different. It did take some minutes before I could actually run the test, but this approach made me think even more about the functionality and the problem. The only downside was the annoying IDE which was highlighting errors for the missing class.</p>
+<p>Since I wanted some UI elements to interact with the parser I created a new class for testing the interface.</p>
+<pre><code>#import &lt;UIKit/UIKit.h&gt;
+#import &lt;XCTest/XCTest.h&gt;
+#import "ViewController.h"
+
+@interface Interface : XCTestCase {
+    ViewController *vc;
+}
+@end
+
+@implementation Interface
+
+- (void)setUp {
+    [super setUp];
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    vc = [storyboard instantiateViewControllerWithIdentifier:@"ViewController"];
+}
+
+- (void)testView {
+
+    // Make sure viewDidLoad is called
+    [vc performSelectorOnMainThread:@selector(loadView) withObject:nil waitUntilDone:YES];
+
+    // Check our tags
+    XCTAssertEqual(vc.answer_but.tag, ANSWER);
+    XCTAssertEqual(vc.add_but.tag, ADD);
+    XCTAssertEqual(vc.but_1.tag, DIGIT_ONE);
+    XCTAssertEqual(vc.but_2.tag, DIGIT_TWO);
+    XCTAssertEqual(vc.but_3.tag, DIGIT_THREE);
+    XCTAssertEqual(vc.but_4.tag, DIGIT_FOUR);
+    XCTAssertEqual(vc.but_5.tag, DIGIT_FIVE);
+    XCTAssertEqual(vc.but_6.tag, DIGIT_SIX);
+    XCTAssertEqual(vc.but_7.tag, DIGIT_SEVEN);
+    XCTAssertEqual(vc.but_8.tag, DIGIT_EIGHT);
+    XCTAssertEqual(vc.but_9.tag, DIGIT_NINE);
+
+    // Test all our button actions
+    NSString *textFieldExpectedText;
+    for (int tag = DIGIT_ONE; tag &lt;= DIGIT_NINE; tag++) {
+        UIButton *button = (UIButton *) [[vc view] viewWithTag:tag];
+        [button sendActionsForControlEvents:UIControlEventTouchUpInside];
+        textFieldExpectedText = [NSString stringWithFormat:@"%lu", button.tag];
+        XCTAssert([[[vc textField] text] isEqualToString:textFieldExpectedText], @"Missing action");
+        [[vc textField] setText:@""];
+    }       
+
+    // Let us see if 2+2 equals 4
+    [[vc but_2] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc add_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc but_2] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc answer_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    textFieldExpectedText = @"4";
+    XCTAssert([[[vc textField] text] isEqualToString:textFieldExpectedText], @"Wrong answer!");
+
+    // Check if textField is cleared when entering more after an answer.
+    [[vc but_4] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc add_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc but_9] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc answer_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    textFieldExpectedText = @"13";
+    XCTAssert([[[vc textField] text] isEqualToString:textFieldExpectedText], @"Wrong answer!");
+
+    // Let us try pressing add multiple times.
+    [[vc but_1] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc add_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc but_5] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc add_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [[vc add_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+
+    [[vc answer_but] sendActionsForControlEvents:UIControlEventTouchUpInside];
+    textFieldExpectedText = @"6";
+    XCTAssert([[[vc textField] text] isEqualToString:textFieldExpectedText], @"Wrong answer!");
+}
+@end
+</code></pre>
+<p>The interface test took longer to write. I had to do some research on how to test the UI.</p>
+<p>Screenshot of the application.</p>
+<p><img alt="image" src="https://31.media.tumblr.com/b4af5ad458e0762c2b7fd4ed0607cdf6/tumblr_inline_nef4qsJfnz1rsmuvq.png"/></p>
+
+<p>I am still not sure if this approach is correct. So if you do have experience doing TDD or writing tests for iOS, please share your knowledge :) I can be contacted on alexander.alemayhu@googlemail.com</p>

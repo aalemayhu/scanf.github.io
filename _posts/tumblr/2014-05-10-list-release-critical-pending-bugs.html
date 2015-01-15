@@ -1,0 +1,8 @@
+---
+layout: post
+title: List release critical pending bugs
+date: '2014-05-10T07:27:21+02:00'
+tags: []
+tumblr_url: http://ccscanf.tumblr.com/post/85305407953
+---
+<pre class="brush: shell">apt-listbugs -S pending list $(dpkg --get-selections|awk '{print $1}')</pre>

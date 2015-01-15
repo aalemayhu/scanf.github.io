@@ -1,0 +1,16 @@
+---
+layout: post
+title: xrandr add missing 2560x1440 res 59 hertz
+date: '2014-07-01T07:44:24+02:00'
+tags:
+- xrandr
+- 25560x1440
+- resolution
+tumblr_url: http://ccscanf.tumblr.com/post/90448265913
+---
+<pre class="brush: shell">#!/bin/sh
+
+xrandr --newmode "2560x1440_59.00"  201.00  2560 2720 2984 3408  1440 1443 1448 1476 +hsync +vsync
+xrandr --addmode HDMI1 2560x1440_59.00
+xrandr --output HDMI1 --mode 2560x1440_59.00 --verbose
+</pre>
