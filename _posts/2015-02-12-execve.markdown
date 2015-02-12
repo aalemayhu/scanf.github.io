@@ -1,0 +1,85 @@
+---
+layout: post
+title: execve 
+---
+
+I recently got around to playing around with
+[strace](http://en.wikipedia.org/wiki/Strace) while debugging an issue I had.
+Since I did not understand the various system calls I decided to start looking
+them up. The first one I looked at as you probably can guess is
+[`execve`](http://man7.org/linux/man-pages/man2/execve.2.html). 
+
+From the synopsis in the man page from 2014-10-02, we can se that it is
+declared in the following way:
+
+    int execve(const char *filename, char *const argv[],
+    char *const envp[]);
+
+Unfortunately Go does not seem to have a execve implementation yet, but I just
+reused the sample code from the manual. Other than rewriting myecho in Go, not
+much changed.
+
+myecho.go:
+
+    package main
+    
+    import (
+        "fmt"
+        "os"
+    )
+    
+    func main() {
+        for i, arg := range os.Args {
+                fmt.Printf("argv[%d]: %s\n", i, arg)
+        }
+    }
+
+execve.c:
+
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <unistd.h>
+    
+    int
+    main(int argc, char *argv[])
+    {
+      char *newargv[] = { NULL, "pika", "..pikachu", NULL };
+      char *newenviron[] = { NULL };
+    
+      if (argc < 2) {
+          fprintf(stderr, "Usage: %s <file-to-exec>\n", argv[0]);
+          exit(EXIT_FAILURE);
+      }
+    
+      newargv[0] = argv[1];
+    
+      execve(argv[1], newargv, newenviron);
+      perror("execve");   /* execve() only returns on error */
+      exit(EXIT_FAILURE);
+    }
+    
+
+Let's try it out:
+
+    $: go build myecho.go
+    $: make execve
+    $: ./execve myecho
+    argv[0]: myecho
+    argv[1]: pika
+    argv[2]: ..pikachu
+
+Looks like it worked :)
+
+execve can also handle scripts that start with line like:
+
+    #! interpreter [optional-arg]
+
+So creating a script like the one below and running it should give you the same
+output as above:
+
+    #!./execve myecho
+
+In it's essence `execve` is a system call to execute programs.
+
+Thanks for reading so far. Please let me know if you see something that is
+false or could be improved in this post.
