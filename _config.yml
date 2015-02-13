@@ -10,3 +10,5 @@ github_username:  scanf
 
 # Build settings
 markdown: kramdown
+gems:
+  - jemoji
