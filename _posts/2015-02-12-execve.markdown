@@ -70,7 +70,7 @@ Let's try it out:
 
 Looks like it worked :)
 
-execve can also handle scripts that start with line like:
+execve can also handle scripts that start with a line like:
 
     #! interpreter [optional-arg]
 
