@@ -1,0 +1,28 @@
+---
+layout: post
+title: "How to improve my work?"
+summary:
+---
+
+I recently asked myself how I could improve my work.  The question was sparked
+while reading the introductory in pragmatic programmers by Ward Cunningham.
+Hope I got his name right :p While thinking about it I came up with some things:
+
+> Stop writing bugs is the most effetive one.
+
+I produce bugs and they cost time. If I would reduce the amount of bugs I
+produce my productivity would increase a lot. Most of my time is either spent on
+writing new code or fixing bugs in existing projects.
+
+> Ask better questions!
+
+I think asking questions might help me improve my work by finding new process to
+use.
+
+> Listen when people talk
+
+It is so easy to start daydreaming when someone is talking. I think paying
+attention might improve the questions one asks and might decrease the number of
+bugs introduced base on misunderstandings.
+
+I hope these thoughts reappear next time I need them :smile:
