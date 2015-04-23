@@ -5,6 +5,7 @@ title: compiling git
 
 
 Using the tag `2.4.0-rc3`:
+
     ccscanf@alemayhu:/tmp/git/git$ git checkout `git describe --tags`
     HEAD is now at 564705c... Git 2.4.0-rc3
 
