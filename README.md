@@ -1,6 +1,6 @@
-scanf.github.io
-=============
+# scanf.github.io
 
-jekyll is awesome, but I have moved to [ghost][0].
+a personal blog, where I am trying to capture things on my journey.  If you see
+any mistakes here, please let me know so it can be corrected.
 
-[0]: http://blog.alemayhu.com
+Thanks!
