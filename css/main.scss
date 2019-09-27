@@ -50,3 +50,20 @@ $on-laptop:        800px;
         "layout",
         "syntax-highlighting"
 ;
+
+// banner
+body {
+  margin: 0;
+}
+
+.warning-h3 {
+  font-size: 2rem;
+  text-align: center;
+/*   color: white */
+}
+
+.warning-header {
+  background: beige;
+  padding: 1rem;
+  margin: 0;
+}
